@@ -1,0 +1,238 @@
+Paste this into Replit, Lovable, Figma AI builders, or any “emergent” code-generation tool.
+Prompt
+Build a production-style Mini Wallet System inspired by real fintech/payment architectures like Paytm, PhonePe, and Stripe.
+The application should simulate wallet-to-wallet money transfers with focus on scalability, reliability, distributed systems concepts, and failure handling.
+Core Functional Requirements
+User Management
+User registration
+Login authentication using JWT
+Profile management
+Wallet creation for each user
+Wallet Features
+Add money to wallet
+Check wallet balance
+Transfer money to another user
+Withdraw money
+Transaction history
+Daily transfer limits
+Payment Processing Features
+Implement payment workflow:
+Plain text
+User → API Gateway → Payment Service → Redis → Kafka → Ledger → Notification
+Transfer flow
+When user transfers money:
+Validate sender
+Validate receiver
+Check sufficient balance
+Generate unique transaction ID
+Generate idempotency key
+Store request in Redis
+Push event to Kafka
+Process transaction asynchronously
+Update ledger
+Notify sender and receiver
+Idempotency handling
+If same payment request is sent twice:
+Example:
+Plain text
+transfer ₹1000 to userB
+and network retries same request:
+System should:
+detect duplicate request
+avoid double deduction
+return previous response
+Use:
+Redis
+unique idempotency keys
+Partial Failure Handling
+Simulate scenarios like:
+sender debited
+receiver credit fails
+DB failure
+notification failure
+Implement:
+Saga Pattern
+Use compensating transactions:
+Plain text
+if receiver credit fails:
+refund sender
+mark transaction failed
+Transaction States
+Maintain:
+INITIATED
+PROCESSING
+SUCCESS
+FAILED
+PENDING
+REVERSED
+Ledger System
+Create immutable ledger entries:
+Plain text
+credit
+debit
+refund
+withdraw
+Ledger should be append-only.
+Never directly trust wallet balance without ledger verification.
+Notification Service
+Async notifications:
+email simulation
+SMS simulation
+in-app notification
+Notification should consume Kafka events.
+Admin Dashboard
+Create admin panel showing:
+total transactions
+successful transactions
+failed transactions
+pending transactions
+fraud alerts
+total wallet balances
+active users
+Kafka queue backlog
+Dashboard should include charts.
+Fraud Detection Rules
+Flag transactions if:
+more than 5 transfers in 1 minute
+large unusual transaction
+multiple failed attempts
+Database Design
+Use:
+PostgreSQL for persistent storage
+Tables:
+users
+id
+name
+email
+password_hash
+wallets
+id
+user_id
+balance
+transactions
+id
+sender_id
+receiver_id
+amount
+status
+idempotency_key
+created_at
+ledger_entries
+id
+transaction_id
+type
+amount
+timestamp
+notifications
+id
+user_id
+message
+status
+Redis
+Use Redis for:
+idempotency keys
+caching balances
+rate limiting
+distributed locking
+Kafka
+Use Apache Kafka for:
+Topics:
+payment-created
+payment-success
+payment-failed
+notification-events
+fraud-events
+Backend Stack
+Build backend using:
+Java
+Spring Boot
+Spring Security
+Spring Data JPA
+Kafka integration
+Redis integration
+REST APIs
+Docker support
+Frontend Stack
+Build frontend using:
+React
+Tailwind CSS
+Dashboard UI
+Login/Register pages
+Wallet transfer UI
+Transaction history UI
+Admin analytics UI
+DevOps
+Provide:
+Docker Compose
+PostgreSQL container
+Redis container
+Kafka container
+backend container
+frontend container
+Failure Simulation APIs
+Create APIs to intentionally trigger failures:
+database failure simulation
+duplicate payment simulation
+notification failure simulation
+Kafka delay simulation
+These are required for interview demonstrations.
+Scalability Requirements
+System should simulate handling:
+10,000 TPS
+horizontal scaling
+async processing
+queue buffering
+retry mechanisms
+Security Requirements
+JWT auth
+encrypted passwords
+API rate limiting
+audit logging
+role-based admin access
+UI Requirements
+Modern fintech dashboard similar to:
+PayPal
+Stripe
+PhonePe
+Include:
+charts
+clean wallet dashboard
+transaction analytics
+responsive design
+Deliverables
+Generate:
+Full backend code
+Full frontend code
+DB schema
+Docker setup
+API documentation
+System architecture diagram
+README for local setup
+Sample test users
+Postman collection
+Bonus Features
+Add:
+QR payments
+bank transfer simulation
+UPI simulation
+cashback engine
+scheduled payments
+recurring payments
+Important Architecture Constraints
+Use microservice-friendly architecture.
+Services:
+Auth Service
+Wallet Service
+Payment Service
+Ledger Service
+Notification Service
+Fraud Service
+Admin Service
+Use event-driven communication wherever possible.
+Focus heavily on:
+fault tolerance
+scalability
+retry handling
+observability
+production-grade architecture
+This prompt is strong because most AI builders generate CRUD apps unless explicitly forced toward distributed systems architecture. This prompt pushes it toward interview-grade architecture.
